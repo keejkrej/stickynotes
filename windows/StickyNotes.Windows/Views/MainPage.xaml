@@ -41,8 +41,8 @@
         <TextBox x:Name="TitleEditor" Grid.Row="2" PlaceholderText="Note title" Text="{x:Bind ViewModel.SelectedNote.Title, Mode=TwoWay}" TextChanged="Editor_TextChanged" IsEnabled="{x:Bind HasSelection, Mode=OneWay}"/>
 
         <Grid Grid.Row="3">
-            <TextBox x:Name="BodyEditor" Text="{x:Bind ViewModel.SelectedNote.Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="Editor_TextChanged" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top" Visibility="{x:Bind EditorVisibility, Mode=OneWay}"/>
-            <ScrollViewer Visibility="{x:Bind PreviewVisibility, Mode=OneWay}"><RichTextBlock x:Name="MarkdownPreview" IsTextSelectionEnabled="True"/></ScrollViewer>
+            <TextBox x:Name="BodyEditor" Text="{x:Bind ViewModel.SelectedNote.Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="Editor_TextChanged" AcceptsReturn="True" TextWrapping="Wrap" FontSize="12" VerticalContentAlignment="Top" Visibility="{x:Bind EditorVisibility, Mode=OneWay}"/>
+            <ScrollViewer Visibility="{x:Bind PreviewVisibility, Mode=OneWay}"><RichTextBlock x:Name="MarkdownPreview" IsTextSelectionEnabled="True" FontSize="12"/></ScrollViewer>
         </Grid>
         <TextBlock Grid.Row="4" Text="{x:Bind ViewModel.StatusText, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="11" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
     </Grid>

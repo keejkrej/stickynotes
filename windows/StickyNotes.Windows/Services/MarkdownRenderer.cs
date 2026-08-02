@@ -21,11 +21,11 @@ public static partial class MarkdownRenderer
             }
 
             var line = rawLine;
-            var paragraph = new Paragraph { Margin = new Thickness(0, 0, 0, 8) };
-            if (line.StartsWith("### ")) { paragraph.FontSize = 19; paragraph.FontWeight = FontWeights.SemiBold; line = line[4..]; }
-            else if (line.StartsWith("## ")) { paragraph.FontSize = 23; paragraph.FontWeight = FontWeights.SemiBold; line = line[3..]; }
-            else if (line.StartsWith("# ")) { paragraph.FontSize = 29; paragraph.FontWeight = FontWeights.Bold; line = line[2..]; }
-            else if (line.StartsWith("> ")) { paragraph.FontStyle = global::Windows.UI.Text.FontStyle.Italic; paragraph.Margin = new Thickness(16, 0, 0, 8); line = line[2..]; }
+            var paragraph = new Paragraph { Margin = new Thickness(0, 0, 0, 4) };
+            if (line.StartsWith("### ")) { paragraph.FontSize = 14; paragraph.FontWeight = FontWeights.SemiBold; line = line[4..]; }
+            else if (line.StartsWith("## ")) { paragraph.FontSize = 16; paragraph.FontWeight = FontWeights.SemiBold; line = line[3..]; }
+            else if (line.StartsWith("# ")) { paragraph.FontSize = 18; paragraph.FontWeight = FontWeights.Bold; line = line[2..]; }
+            else if (line.StartsWith("> ")) { paragraph.FontStyle = global::Windows.UI.Text.FontStyle.Italic; paragraph.Margin = new Thickness(10, 0, 0, 4); line = line[2..]; }
             else if (BulletRegex().IsMatch(line)) line = "• " + BulletRegex().Replace(line, string.Empty);
             AddInlines(paragraph.Inlines, line);
             yield return paragraph;
