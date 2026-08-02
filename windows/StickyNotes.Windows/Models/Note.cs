@@ -7,4 +7,6 @@ public sealed class Note
     public string Content { get; set; } = string.Empty;
     public string Color { get; set; } = "Yellow";
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.Now;
+
+    public override string ToString() => Title;
 }
