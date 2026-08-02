@@ -30,12 +30,14 @@ namespace StickyNotes.Windows
         {
             window ??= new Window();
             MainWindow = window;
+            window.Title = "Sticky Notes";
             window.ExtendsContentIntoTitleBar = true;
             window.SystemBackdrop = new DesktopAcrylicBackdrop();
 
             if (window.AppWindow.Presenter is OverlappedPresenter presenter)
             {
-                presenter.SetBorderAndTitleBar(false, false);
+                // Keep the compositor-owned border/shadow, but replace the title bar.
+                presenter.SetBorderAndTitleBar(true, false);
                 presenter.IsAlwaysOnTop = true;
                 presenter.IsResizable = true;
             }

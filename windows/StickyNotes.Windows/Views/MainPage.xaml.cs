@@ -22,7 +22,6 @@ public sealed partial class MainPage : Page
             {
                 Bindings.Update();
                 RenderMarkdown();
-                ApplyColor();
             }
             if (args.PropertyName == nameof(ViewModel.IsPreview))
             {
@@ -38,11 +37,6 @@ public sealed partial class MainPage : Page
     }
 
     private void Editor_TextChanged(object sender, TextChangedEventArgs e) => ScheduleSave();
-    private void Editor_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        ApplyColor();
-        ScheduleSave();
-    }
     private void Close_Click(object sender, RoutedEventArgs e) => App.MainWindow.Close();
 
     private void ScheduleSave()
@@ -66,16 +60,4 @@ public sealed partial class MainPage : Page
             MarkdownPreview.Blocks.Add(block);
     }
 
-    private void ApplyColor()
-    {
-        var color = ViewModel.SelectedNote?.Color switch
-        {
-            "Pink" => global::Windows.UI.Color.FromArgb(136, 255, 184, 205),
-            "Blue" => global::Windows.UI.Color.FromArgb(136, 174, 218, 255),
-            "Green" => global::Windows.UI.Color.FromArgb(136, 184, 230, 184),
-            "Gray" => global::Windows.UI.Color.FromArgb(136, 215, 215, 215),
-            _ => global::Windows.UI.Color.FromArgb(136, 255, 217, 102)
-        };
-        WidgetRoot.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(color);
-    }
 }

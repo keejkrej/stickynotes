@@ -14,7 +14,7 @@ dotnet run --project StickyNotes.Windows.csproj -p:Platform=x64
 
 Notes are stored in `%LOCALAPPDATA%\StickyNotes\notes.json`.
 
-The Windows app itself is a draggable, resizable floating sticky. It uses the system Desktop Acrylic backdrop with a translucent note-color tint. Use the note picker in its drag bar to switch notes.
+The Windows app itself is a draggable, resizable floating sticky. It inherits the system light/dark theme and uses the system Desktop Acrylic backdrop without a custom color overlay. Use the note picker below its drag bar to switch notes.
 
 ## macOS (SwiftUI)
 
