@@ -42,7 +42,7 @@
 
         <Grid Grid.Row="3">
             <TextBox x:Name="BodyEditor" Text="{x:Bind ViewModel.SelectedNote.Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="Editor_TextChanged" AcceptsReturn="True" TextWrapping="Wrap" FontSize="12" VerticalContentAlignment="Top" Visibility="{x:Bind EditorVisibility, Mode=OneWay}"/>
-            <ScrollViewer Visibility="{x:Bind PreviewVisibility, Mode=OneWay}"><RichTextBlock x:Name="MarkdownPreview" IsTextSelectionEnabled="True" FontSize="12"/></ScrollViewer>
+            <ScrollViewer Visibility="{x:Bind PreviewVisibility, Mode=OneWay}"><StackPanel x:Name="MarkdownPreview"/></ScrollViewer>
         </Grid>
         <TextBlock Grid.Row="4" Text="{x:Bind ViewModel.StatusText, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="11" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
     </Grid>

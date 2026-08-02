@@ -88,9 +88,9 @@ public sealed partial class MainPage : Page
 
     private void RenderMarkdown()
     {
-        MarkdownPreview.Blocks.Clear();
-        foreach (var block in MarkdownRenderer.Render(ViewModel.SelectedNote?.Content ?? string.Empty))
-            MarkdownPreview.Blocks.Add(block);
+        MarkdownPreview.Children.Clear();
+        foreach (var element in MarkdownRenderer.Render(ViewModel.SelectedNote?.Content ?? string.Empty))
+            MarkdownPreview.Children.Add(element);
     }
 
 }
