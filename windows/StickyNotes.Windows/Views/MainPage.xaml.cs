@@ -21,6 +21,7 @@ public sealed partial class MainPage : Page
             if (args.PropertyName == nameof(ViewModel.SelectedNote))
             {
                 Bindings.Update();
+                NotePicker.Text = ViewModel.SelectedNote?.Title ?? string.Empty;
                 RenderMarkdown();
             }
             if (args.PropertyName == nameof(ViewModel.IsPreview))
@@ -33,10 +34,42 @@ public sealed partial class MainPage : Page
         {
             App.MainWindow.SetTitleBar(DragRegion);
             await ViewModel.InitializeAsync();
+            NotePicker.Text = ViewModel.SelectedNote?.Title ?? string.Empty;
         };
     }
 
-    private void Editor_TextChanged(object sender, TextChangedEventArgs e) => ScheduleSave();
+    private void Editor_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (ReferenceEquals(sender, TitleEditor) && ViewModel.SearchText.Length == 0)
+            NotePicker.Text = TitleEditor.Text;
+        ScheduleSave();
+    }
+    private void NotePicker_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+    {
+        if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            ViewModel.SearchText = sender.Text;
+    }
+
+    private void NotePicker_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+    {
+        if (args.SelectedItem is not StickyNotes.Windows.Models.Note note) return;
+        SelectNote(sender, note);
+    }
+
+    private void NotePicker_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+    {
+        if (args.ChosenSuggestion is StickyNotes.Windows.Models.Note note)
+            SelectNote(sender, note);
+        else if (ViewModel.Notes.FirstOrDefault() is { } first)
+            SelectNote(sender, first);
+    }
+
+    private void SelectNote(AutoSuggestBox sender, StickyNotes.Windows.Models.Note note)
+    {
+        ViewModel.SelectedNote = note;
+        ViewModel.SearchText = string.Empty;
+        sender.Text = note.Title;
+    }
     private void Close_Click(object sender, RoutedEventArgs e) => App.MainWindow.Close();
 
     private void ScheduleSave()

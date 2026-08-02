@@ -4,7 +4,7 @@
     <Grid x:Name="WidgetRoot" Background="Transparent" Padding="16,10,16,14" RowSpacing="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="20"/>
+            <RowDefinition Height="*"/><RowDefinition Height="20"/>
         </Grid.RowDefinitions>
 
         <Grid ColumnSpacing="6">
@@ -13,7 +13,6 @@
                 <StackPanel Orientation="Horizontal" Spacing="9" VerticalAlignment="Center">
                     <FontIcon Glyph="&#xE70B;" FontSize="16"/>
                     <TextBlock Text="STICKY NOTES" FontSize="12" FontWeight="SemiBold" CharacterSpacing="80" VerticalAlignment="Center"/>
-                    <FontIcon Glyph="&#xE76F;" FontSize="12" Opacity="0.45"/>
                 </StackPanel>
             </Border>
             <Button Grid.Column="1" Command="{x:Bind ViewModel.AddNoteCommand}" Style="{StaticResource WidgetIconButton}" ToolTipService.ToolTip="New note"><FontIcon Glyph="&#xE710;"/></Button>
@@ -21,25 +20,22 @@
         </Grid>
 
         <Grid Grid.Row="1" ColumnSpacing="8">
-            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-            <ComboBox ItemsSource="{x:Bind ViewModel.Notes}" SelectedItem="{x:Bind ViewModel.SelectedNote, Mode=TwoWay}" DisplayMemberPath="Title" PlaceholderText="Choose a note" HorizontalAlignment="Stretch"/>
-            <Button Grid.Column="1" Command="{x:Bind ViewModel.DeleteNoteCommand}" Style="{StaticResource WidgetIconButton}" ToolTipService.ToolTip="Delete note"><FontIcon Glyph="&#xE74D;"/></Button>
-        </Grid>
-
-        <TextBox Grid.Row="2" PlaceholderText="Note title" Text="{x:Bind ViewModel.SelectedNote.Title, Mode=TwoWay}" TextChanged="Editor_TextChanged" IsEnabled="{x:Bind HasSelection, Mode=OneWay}" FontSize="20" FontWeight="SemiBold" BorderThickness="0" Background="Transparent" Padding="2,7"/>
-
-        <Grid Grid.Row="3" ColumnSpacing="8">
-            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-            <AutoSuggestBox PlaceholderText="Search notes" QueryIcon="Find" Text="{x:Bind ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <AutoSuggestBox x:Name="NotePicker" PlaceholderText="Find or switch notes" QueryIcon="Find"
+                ItemsSource="{x:Bind ViewModel.Notes}" TextMemberPath="Title"
+                TextChanged="NotePicker_TextChanged" SuggestionChosen="NotePicker_SuggestionChosen" QuerySubmitted="NotePicker_QuerySubmitted"/>
             <ToggleButton Grid.Column="1" IsChecked="{x:Bind ViewModel.IsPreview, Mode=TwoWay}" Style="{StaticResource WidgetIconToggleButton}" ToolTipService.ToolTip="Markdown preview"><FontIcon Glyph="&#xE890;"/></ToggleButton>
+            <Button Grid.Column="2" Command="{x:Bind ViewModel.DeleteNoteCommand}" Style="{StaticResource WidgetIconButton}" ToolTipService.ToolTip="Delete note"><FontIcon Glyph="&#xE74D;"/></Button>
         </Grid>
 
-        <Border Grid.Row="4" Background="{ThemeResource SubtleFillColorSecondaryBrush}" CornerRadius="8" Padding="4">
+        <TextBox x:Name="TitleEditor" Grid.Row="2" PlaceholderText="Note title" Text="{x:Bind ViewModel.SelectedNote.Title, Mode=TwoWay}" TextChanged="Editor_TextChanged" IsEnabled="{x:Bind HasSelection, Mode=OneWay}" FontSize="20" FontWeight="SemiBold" BorderThickness="0" Background="Transparent" Padding="2,7"/>
+
+        <Border Grid.Row="3" Background="{ThemeResource SubtleFillColorSecondaryBrush}" CornerRadius="8" Padding="4">
             <Grid>
                 <TextBox x:Name="BodyEditor" Text="{x:Bind ViewModel.SelectedNote.Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="Editor_TextChanged" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Segoe UI Variable Text" FontSize="15" VerticalContentAlignment="Top" Visibility="{x:Bind EditorVisibility, Mode=OneWay}" Background="Transparent" BorderThickness="0" Padding="9"/>
                 <ScrollViewer Visibility="{x:Bind PreviewVisibility, Mode=OneWay}" Padding="10"><RichTextBlock x:Name="MarkdownPreview" IsTextSelectionEnabled="True" FontSize="15"/></ScrollViewer>
             </Grid>
         </Border>
-        <TextBlock Grid.Row="5" Text="{x:Bind ViewModel.StatusText, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="11" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+        <TextBlock Grid.Row="4" Text="{x:Bind ViewModel.StatusText, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="11" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
     </Grid>
 </Page>
