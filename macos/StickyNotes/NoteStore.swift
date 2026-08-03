@@ -5,27 +5,37 @@ final class NoteStore: ObservableObject {
     @Published private(set) var notes: [Note] = []
     @Published var selection: Note.ID?
     @Published var searchText = ""
+    @Published private(set) var statusText = "Ready"
 
     private let fileURL: URL
     private var saveTask: Task<Void, Never>?
 
-    init() {
-        let directory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+    init(fileURL: URL? = nil) {
+        let directory = fileURL?.deletingLastPathComponent() ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("StickyNotes", isDirectory: true)
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        fileURL = directory.appendingPathComponent("notes.json")
+        self.fileURL = fileURL ?? directory.appendingPathComponent("notes.json")
         load()
     }
 
     var filteredNotes: [Note] {
-        guard !searchText.isEmpty else { return notes }
-        return notes.filter { $0.title.localizedCaseInsensitiveContains(searchText) ||
-            $0.content.localizedCaseInsensitiveContains(searchText) }
+        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !query.isEmpty else { return notes }
+        return notes.filter { $0.title.localizedCaseInsensitiveContains(query) ||
+            $0.content.localizedCaseInsensitiveContains(query) }
+    }
+
+    var selectedNote: Note? {
+        guard let selection else { return nil }
+        return notes.first { $0.id == selection }
     }
 
     func binding(for id: Note.ID) -> Binding<Note>? {
-        guard let index = notes.firstIndex(where: { $0.id == id }) else { return nil }
-        return Binding(get: { self.notes[index] }, set: { value in
+        guard let initialNote = notes.first(where: { $0.id == id }) else { return nil }
+        return Binding(get: {
+            self.notes.first(where: { $0.id == id }) ?? initialNote
+        }, set: { value in
+            guard let index = self.notes.firstIndex(where: { $0.id == id }) else { return }
             var changed = value
             changed.updatedAt = Date()
             self.notes[index] = changed
@@ -47,6 +57,12 @@ final class NoteStore: ObservableObject {
         scheduleSave()
     }
 
+    func flushPendingSave() {
+        saveTask?.cancel()
+        saveTask = nil
+        save()
+    }
+
     private func load() {
         if let data = try? Data(contentsOf: fileURL),
            let decoded = try? JSONDecoder().decode([Note].self, from: data) {
@@ -61,6 +77,7 @@ final class NoteStore: ObservableObject {
 
     private func scheduleSave() {
         saveTask?.cancel()
+        statusText = "Saving…"
         saveTask = Task {
             try? await Task.sleep(for: .milliseconds(400))
             guard !Task.isCancelled else { return }
@@ -70,6 +87,7 @@ final class NoteStore: ObservableObject {
 
     private func save() {
         guard let data = try? JSONEncoder().encode(notes) else { return }
-        try? data.write(to: fileURL, options: .atomic)
+        guard (try? data.write(to: fileURL, options: .atomic)) != nil else { return }
+        statusText = "Saved \(Date.now.formatted(date: .omitted, time: .shortened))"
     }
 }

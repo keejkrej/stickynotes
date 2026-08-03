@@ -20,9 +20,15 @@ The Windows app itself is a draggable, resizable floating sticky. It inherits th
 
 Open `macos/StickyNotes.xcodeproj` in Xcode 26 or newer, select your development team if signing is requested, and Run. The deployment target is macOS 14. This project is intentionally not compiled on Windows.
 
+Run the macOS unit tests from Terminal with:
+
+```sh
+xcodebuild -project macos/StickyNotes.xcodeproj -scheme StickyNotes -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO test
+```
+
 Notes are stored in `~/Library/Application Support/StickyNotes/notes.json`.
 
-The main window manages the collection. Click the window icon beside any note to open it as a separate floating sticky that follows you across Spaces. On macOS 26 it uses native Liquid Glass; macOS 14–15 receive an Ultra Thin Material fallback.
+Like the Windows version, the macOS app is a single compact, resizable, always-on-top sticky. Use the note picker to find or switch notes without leaving the floating window.
 
 ## Markdown
 
